@@ -1,9 +1,10 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:untitled1/platform_selector.dart';
 import 'package:untitled1/reordered_page.dart';
+import 'package:untitled1/search_bar_page.dart';
 import 'package:untitled1/text_editor_page.dart';
 
 import 'anywhere_page.dart';
@@ -41,16 +42,16 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     // On web, disable the browser's context menu everywhere so that the custom
     // Flutter-rendered context menu shows.
-    if (kIsWeb) {
-      BrowserContextMenu.disableContextMenu();
-    }
+    // if (kIsWeb) {
+    //   BrowserContextMenu.disableContextMenu();
+    // }
   }
 
   @override
   void dispose() {
-    if (kIsWeb) {
-      BrowserContextMenu.enableContextMenu();
-    }
+    // if (kIsWeb) {
+    //   BrowserContextMenu.enableContextMenu();
+    // }
     super.dispose();
   }
 
@@ -65,6 +66,7 @@ class _MyAppState extends State<MyApp> {
       initialRoute: '/',
       routes: <String, Widget Function(BuildContext)>{
         '/': (context) => MyHomePage(onChangedPlatform: onChangedPlatform),
+        SearchBarPage.route:(context)=> SearchBarPage(onChangedPlatform: onChangedPlatform),
         TextEditorPage.route: (context) =>
             TextEditorPage(onChangedPlatform: onChangedPlatform),
         FieldTypesPage.route: (context) =>
@@ -121,6 +123,11 @@ class MyHomePage extends StatelessWidget {
       ),
       body: ListView(
         children: const <Widget>[
+          _MyListItem(
+            route: SearchBarPage.route,
+            title: SearchBarPage.title,
+            subtitle: SearchBarPage.subtitle,
+          ),
           _MyListItem(
             route: TextEditorPage.route,
             title: TextEditorPage.title,
