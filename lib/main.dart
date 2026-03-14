@@ -6,6 +6,7 @@ import 'package:untitled1/platform_selector.dart';
 import 'package:untitled1/reordered_page.dart';
 import 'package:untitled1/search_bar_page.dart';
 import 'package:untitled1/text_editor_page.dart';
+import 'package:untitled1/theme_setup_page.dart';
 
 import 'anywhere_page.dart';
 import 'cascading_menu_page.dart';
@@ -31,9 +32,24 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.system;
+  Color _seedColor = Colors.blue;
+
   void onChangedPlatform(TargetPlatform platform) {
     setState(() {
       debugDefaultTargetPlatformOverride = platform;
+    });
+  }
+
+  void _onThemeModeChanged(ThemeMode mode) {
+    setState(() {
+      _themeMode = mode;
+    });
+  }
+
+  void _onSeedColorChanged(Color color) {
+    setState(() {
+      _seedColor = color;
     });
   }
 
@@ -60,12 +76,27 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      themeMode: _themeMode,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: _seedColor),
+        useMaterial3: true,
+      ),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: _seedColor,
+          brightness: Brightness.dark,
+        ),
+        useMaterial3: true,
       ),
       initialRoute: '/',
       routes: <String, Widget Function(BuildContext)>{
         '/': (context) => MyHomePage(onChangedPlatform: onChangedPlatform),
+        ThemeSetupPage.route: (context) => ThemeSetupPage(
+              currentThemeMode: _themeMode,
+              onThemeModeChanged: _onThemeModeChanged,
+              currentSeedColor: _seedColor,
+              onSeedColorChanged: _onSeedColorChanged,
+            ),
         SearchBarPage.route:(context)=> SearchBarPage(onChangedPlatform: onChangedPlatform),
         TextEditorPage.route: (context) =>
             TextEditorPage(onChangedPlatform: onChangedPlatform),
@@ -123,6 +154,11 @@ class MyHomePage extends StatelessWidget {
       ),
       body: ListView(
         children: const <Widget>[
+          _MyListItem(
+            route: ThemeSetupPage.route,
+            title: ThemeSetupPage.title,
+            subtitle: ThemeSetupPage.subtitle,
+          ),
           _MyListItem(
             route: SearchBarPage.route,
             title: SearchBarPage.title,
